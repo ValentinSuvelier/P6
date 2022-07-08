@@ -23,6 +23,7 @@ exports.createSauce = (req, res, next) => { //POST
 }
 exports.likesAndDislikes = (req, res, next) => {
     const like = parseInt(req.body.like);
+    console.log(req.body)
     switch (like) {
         case 0:
             Sauce.findOne({ _id: req.params.id })
@@ -96,7 +97,7 @@ exports.updateSauce = (req, res, next) => { //MODIFY
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Objet modifié !'}))
       .catch(error => res.status(400).json({ error }));
-  };
+};
 
 exports.deleteSauce = (req, res, next) => { //DELETE
     Sauce.findOne({ _id: req.params.id })

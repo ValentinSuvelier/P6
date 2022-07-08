@@ -1,4 +1,5 @@
-const http = require('http');
+const http = require('http'); 
+//HTTPS Permet de chiffrer les transmissions pour plus de sécurité lors d'un transit de données
 const app = require('./app');
 
 const normalizePort = val => {
