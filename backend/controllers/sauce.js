@@ -1,7 +1,7 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 
-exports.createSauce = (req, res, next) => { //POST
+exports.createSauce = (req, res, next) => { // création de sauce puis méthode POST depuis route sauce
     const sauceObject = JSON.parse(req.body.sauce);
     const sauce = new Sauce({
         ...sauceObject,
@@ -28,6 +28,7 @@ exports.likesAndDislikes = (req, res, next) => {
         case 0:
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
+                    // si l'userID à déjà like ce produit, on soustrait 1 like si il re-click sur le même bouton
                     if (sauce.usersLiked.includes(req.body.userId)) {
                         sauce.usersLiked.splice(req.body.userId, 1)
                         sauce.likes--;
@@ -39,6 +40,7 @@ exports.likesAndDislikes = (req, res, next) => {
                                 res.status(400).json({ err })
                             })
                     }
+                    // si l'userID à déjà dislike ce produit, on soustrait 1 dislike si il re-click sur le même bouton
                     else if (sauce.usersDisliked.includes(req.body.userId)) {
                         sauce.usersDisliked.splice(req.body.userId, 1)
                         sauce.dislikes--;
@@ -54,6 +56,7 @@ exports.likesAndDislikes = (req, res, next) => {
                 .catch((err) => res.status(500).json({ err }))
             break;
         case 1:
+            // envoi de l'userID dans le tableau usersLiked lors d'un like
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
                     sauce.likes++;
@@ -69,6 +72,7 @@ exports.likesAndDislikes = (req, res, next) => {
                 .catch((err) => res.status(500).json({ err }))
             break;
         case -1:
+            // envoi de l'userID dans le tableau usersDisliked lors d'un dislike
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
                     sauce.dislikes++;
@@ -94,6 +98,7 @@ exports.updateSauce = (req, res, next) => { //MODIFY
         ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
       } : { ...req.body };
+    // on prend comme prmier argument l'objet que l'on modifie, et le deuxième sera le nouvel objet avec le bon _id des paramètres
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Objet modifié !'}))
       .catch(error => res.status(400).json({ error }));
@@ -101,6 +106,7 @@ exports.updateSauce = (req, res, next) => { //MODIFY
 
 exports.deleteSauce = (req, res, next) => { //DELETE
     Sauce.findOne({ _id: req.params.id })
+    // on supprime l'image du dossier images avec unlink ainsi que l'id des paramètres de route
       .then(sauce => {
         const filename = sauce.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {

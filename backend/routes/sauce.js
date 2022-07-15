@@ -4,6 +4,7 @@ const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 const router  = express.Router();
 
+// on protège nos routes par le middleware auth
 router.post('/', auth, multer, sauceCtrl.createSauce)
 router.put('/:id', auth, multer, sauceCtrl.updateSauce)
 router.delete('/:id', auth, sauceCtrl.deleteSauce)

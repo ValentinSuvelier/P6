@@ -1,5 +1,4 @@
-const http = require('http'); 
-//HTTPS Permet de chiffrer les transmissions pour plus de sécurité lors d'un transit de données
+const http = require('http');
 const app = require('./app');
 
 const normalizePort = val => {
@@ -13,6 +12,7 @@ const normalizePort = val => {
   }
   return false;
 };
+// on écoute le port utilisé par défaut de la plateforme de déploiement ou le port 3000
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -45,4 +45,5 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
+// le server écoute le port utilisé
 server.listen(port);
